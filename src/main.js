@@ -1,32 +1,47 @@
-import {createMenuTemplate} from './components/menu.js';
-import {createFilterTemplate} from './components/filter.js';
-import {createSortTemplate} from './components/sort.js';
 import {createBoardTemplate} from './components/board.js';
-import {createCardTemplate} from './components/card.js';
-import {createEditCardTemplate} from './components/edit-card.js';
-import {createLoadButtonTemplate} from './components/load-button.js';
+import {createFilterTemplate} from './components/filter.js';
+import {createLoadMoreButtonTemplate} from './components/load-more-button.js';
+import {createTaskEditTemplate} from './components/task-edit.js';
+import {createTaskTemplate} from './components/task.js';
+import {createSiteMenuTemplate} from './components/site-menu.js';
+import {generateTasks} from './mock/task.js';
+import {generateFilters} from './mock/filter.js';
 
-const CARD_COUNT = 3;
+const TASK_COUNT = 22;
+const SHOWING_TASKS_COUNT_ON_START = 8;
+const SHOWING_TASKS_COUNT_BY_BUTTON = 8;
 
 const render = (container, template, place = `beforeEnd`) => {
   container.insertAdjacentHTML(place, template);
 };
 
-const main = document.querySelector(`.main`);
-const mainControl = main.querySelector(`.main__control`);
+const siteMainElement = document.querySelector(`.main`);
+const siteHeaderElement = siteMainElement.querySelector(`.main__control`);
 
-render(mainControl, createMenuTemplate());
-render(main, createFilterTemplate());
-render(main, createBoardTemplate());
+render(siteHeaderElement, createSiteMenuTemplate(), `beforeend`);
 
-const board = document.querySelector(`.board`);
-render(board, createSortTemplate(), `afterBegin`);
+const filters = generateFilters();
+render(siteMainElement, createFilterTemplate(filters), `beforeend`);
+render(siteMainElement, createBoardTemplate(), `beforeend`);
 
-const boardTasks = document.querySelector(`.board__tasks`);
-render(boardTasks, createEditCardTemplate());
+const taskListElement = document.querySelector(`.board__tasks`);
+const tasks = generateTasks(TASK_COUNT);
 
-for (let i = 0; i < CARD_COUNT; i++) {
-  render(boardTasks, createCardTemplate());
-}
+render(taskListElement, createTaskEditTemplate(tasks[0]), `beforeend`);
+let showingTasksCount = SHOWING_TASKS_COUNT_ON_START;
+tasks.slice(1, showingTasksCount).forEach((task) => render(taskListElement, createTaskTemplate(task), `beforeend`));
 
-render(board, createLoadButtonTemplate());
+const boardElement = siteMainElement.querySelector(`.board`);
+render(boardElement, createLoadMoreButtonTemplate(), `beforeend`);
+
+const loadMoreButton = boardElement.querySelector(`.load-more`);
+loadMoreButton.addEventListener(`click`, () => {
+  const prevTasksCount = showingTasksCount;
+  showingTasksCount = prevTasksCount + SHOWING_TASKS_COUNT_BY_BUTTON;
+
+  tasks.slice(prevTasksCount, showingTasksCount).forEach((task) => render(taskListElement, createTaskTemplate(task), `beforeend`));
+
+  if (showingTasksCount >= tasks.length) {
+    loadMoreButton.remove();
+  }
+});
