@@ -29,19 +29,25 @@ export default class TaskController {
     this._taskEditComponent = new TaskEditComponent(task);
 
     this._taskComponent.setEditButtonClickHandler(() => {
-      this.replaceTaskToEdit();
+      this._replaceTaskToEdit();
       document.addEventListener(`keydown`, this._onEscKeyDown);
     });
 
     this._taskComponent.setArchiveButtonClickHandler(() => {
       this._onDataChange(this, task, Object.assign({}, task, {
-        isFavorite: !task.isFavorite
+        isArchive: !task.isArchive
+      }));
+    });
+
+    this._taskComponent.setFavoritesButtonClickHandler(() => {
+      this._onDataChange(this, task, Object.assign({}, task, {
+        isFavorite: !task.isFavorite,
       }));
     });
 
     this._taskEditComponent.setSubmitHandler((evt) => {
       evt.preventDefault();
-      this.replaceEditToTask();
+      this._replaceEditToTask();
     });
 
     if (oldTaskEditComponent && oldTaskComponent) {

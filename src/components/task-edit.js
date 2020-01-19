@@ -39,7 +39,7 @@ const createRepeatingDaysMarkup = (days, repeatingDays) => {
         ${isChecked ? `checked` : ``}
       />
       <label class="card__repeat-day" for="repeat-${day}-4"
-        >fr</label>`
+        >${day}</label>`
     );
   }).join(`\n`);
 };
@@ -123,7 +123,7 @@ const createTaskEditTemplate = (task, option = {}) => {
     }
 
                 <button class="card__repeat-toggle" type="button">
-                  repeat:<span class="card__repeat-status">${isDateShowing ? `yes` : `no`}</span>
+                  repeat:<span class="card__repeat-status">${isRepeatingTask ? `yes` : `no`}</span>
                 </button>
 
                 ${isRepeatingTask ?
@@ -215,7 +215,7 @@ export default class TaskEdit extends AbstractSmartComponent {
 
   setSubmitHandler(handler) {
     this.getElement().querySelector(`form`).addEventListener(`submit`, handler);
-    this._submitHandler(handler);
+    this._submitHandler = handler;
   }
 
   _applyFlatpickr() {
