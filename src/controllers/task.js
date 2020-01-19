@@ -33,7 +33,7 @@ export default class TaskController {
       document.addEventListener(`keydown`, this._onEscKeyDown);
     });
 
-    this._taskComponent.setArhiveButtonClickHandler(() => {
+    this._taskComponent.setArchiveButtonClickHandler(() => {
       this._onDataChange(this, task, Object.assign({}, task, {
         isFavorite: !task.isFavorite
       }));
@@ -74,7 +74,7 @@ export default class TaskController {
     this._mode = Mode.EDIT;
   }
 
-  onEscKeyDown(evt) {
+  _onEscKeyDown(evt) {
     const isEscKey = evt.key === `Escape` || evt.key === `Esc`;
 
     if (isEscKey) {
